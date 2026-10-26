@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    border-color: #E8E8E8;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F7F7F7;
+    color: #111111;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+/* Custom Glass & Gradient utilities */
+.gradient-card-primary {
+  background: linear-gradient(135deg, #781008 0%, #A4190C 20%, #C9340E 45%, #E35212 70%, #F5751C 100%);
+}
+
+.gradient-card-secondary {
+  background: linear-gradient(145deg, #8B120A 0%, #C3280B 40%, #EA5410 75%, #F97C22 100%);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
