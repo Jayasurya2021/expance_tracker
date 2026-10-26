@@ -1,122 +1,142 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import DashboardView from './pages/DashboardView';
+import TransactionsView from './pages/TransactionsView';
+import ImportStatementView from './pages/ImportStatementView';
+import BudgetsView from './pages/BudgetsView';
+import ReportsView from './pages/ReportsView';
+import AuthView from './pages/AuthView';
+import AddTransactionModal from './components/AddTransactionModal';
+import CreateReportModal from './components/CreateReportModal';
+import NotificationDrawer from './components/NotificationDrawer';
+import { Sparkles, ShieldCheck } from 'lucide-react';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+
+  const handleDepositClick = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleWithdrawClick = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleOpenAuth = (mode = 'login') => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-[#F7F7F7] text-[#111111] flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+      
+      {/* Top Floating Pill Navigation */}
+      <div>
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenAuth={() => handleOpenAuth('login')}
+          onOpenNotifications={() => setIsNotificationOpen(true)}
+          unreadCount={3}
+        />
 
-      <div className="ticks"></div>
+        {/* Dynamic Page Views */}
+        {activeTab === 'dashboard' && (
+          <DashboardView
+            onOpenCreateReport={() => setIsReportModalOpen(true)}
+            onOpenAddTransaction={() => setIsAddModalOpen(true)}
+            onViewAllTransactions={() => setActiveTab('transactions')}
+            onSelectCategory={() => setActiveTab('budgets')}
+            onSelectTransaction={() => setActiveTab('transactions')}
+            onDepositClick={handleDepositClick}
+            onWithdrawClick={handleWithdrawClick}
+          />
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {activeTab === 'transactions' && (
+          <TransactionsView
+            onOpenAddTransaction={() => setIsAddModalOpen(true)}
+          />
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {activeTab === 'import' && (
+          <ImportStatementView
+            onImportComplete={() => setActiveTab('transactions')}
+          />
+        )}
+
+        {activeTab === 'budgets' && (
+          <BudgetsView />
+        )}
+
+        {activeTab === 'reports' && (
+          <ReportsView
+            onOpenCreateReport={() => setIsReportModalOpen(true)}
+          />
+        )}
+      </div>
+
+      {/* Global Modals & Drawers */}
+      <AddTransactionModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
+
+      <CreateReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
+
+      <NotificationDrawer
+        isOpen={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
+      />
+
+      {isAuthOpen && (
+        <AuthView
+          initialMode={authMode}
+          onClose={() => setIsAuthOpen(false)}
+          onLoginSuccess={() => {
+            setIsAuthOpen(false);
+            setActiveTab('dashboard');
+          }}
+        />
+      )}
+
+      {/* Minimal Sleek Footer */}
+      <footer className="w-full py-6 px-4 sm:px-8 border-t border-neutral-200/60 bg-white/40 mt-12">
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-neutral-700">Spendly AI</span>
+            <span>•</span>
+            <span>Premium Fintech Expense Tracker</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => handleOpenAuth('login')}
+              className="hover:text-neutral-900 transition font-medium cursor-pointer"
+            >
+              Sign In Demo
+            </button>
+            <button
+              onClick={() => handleOpenAuth('register')}
+              className="hover:text-neutral-900 transition font-medium cursor-pointer"
+            >
+              Register Demo
+            </button>
+            <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5" /> Frontend UI Ready for API Phase 2
+            </span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
 }
-
-export default App
